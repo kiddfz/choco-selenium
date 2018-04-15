@@ -14,6 +14,10 @@ $pp            = Get-SeleniumConfigDefaults
 $name          = "Selenium $((Get-Culture).TextInfo.ToTitleCase($pp["role"]))"
 $seleniumPath  = "$seleniumDir\selenium-server-standalone.jar"
 
+if ($PSVersionTable.PSVersion.Major -lt 3) {
+  Throw "PowerShell 3 or greater is required. Install PowerShell 3 or greater before installing Selenium, e.g., 'choco install powershell'."
+}
+
 if (!(Test-Path $seleniumDir)) {
   New-Item $seleniumDir -ItemType directory -Force
 }
