@@ -133,7 +133,7 @@ echo Logging to $logPath
   }
 }
 
-If (Get-NetFirewallRule) {
+If (Get-Command Get-NetFirewallRule -errorAction SilentlyContinue) {
  $rules = Get-NetFirewallRule
  $par = @{
    DisplayName = "$name"
@@ -149,6 +149,8 @@ If (Get-NetFirewallRule) {
 } else {
   try {
     netsh advfirewall firewall add rule name="$name" protocol=TCP dir=in localport=$pp["port"] action=allow
-  } catch {}
+  } catch {
+    "Assuming firewall rule $name exists."
+  }
   Write-Debug "Selenium firewall: $name"
 }

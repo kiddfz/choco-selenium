@@ -12,13 +12,15 @@ foreach ($name in $names) {
     nssm remove "$name" confirm
   }
 
-  If (Get-NetFirewallRule) {
+  If (Get-Command Get-NetFirewallRule -errorAction SilentlyContinue) {
     $rules = Get-NetFirewallRule
     if ($rules.DisplayName.Contains($name)) {Remove-NetFirewallRule -DisplayName $name}
   } else {
     try {
       netsh advfirewall firewall delete rule name="allow80"
-    } catch {}
+    } catch {
+      "Assuming firewall rule $name exists."
+    }
   }
 
   if (Test-Path $shortcutDir) {

@@ -72,8 +72,8 @@ If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Main")) {
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Main" -Name "DisableFirstRunCustomize" -Type DWord -Value 1
 
 # allow IE Driver through Firewall
-If (New-NetFirewallRule) {
-  New-NetFirewallRule -DisplayName "Command line server for the IE driver" -Direction Inbound -Program "C:\tools\selenium\iedriverserver.exe" -Action Allow
+If (Get-Command New-NetFirewallRule -errorAction SilentlyContinue) {
+  New-NetFirewallRule -DisplayName "IEDriverServer" -Direction Inbound -Program "C:\tools\selenium\iedriverserver.exe" -Action Allow
 } else {
-  netsh advfirewall firewall add rule name="Command line server for the IE driver" dir=in program="C:\tools\selenium\iedriverserver.exe" action=allow
+  netsh advfirewall firewall add rule name="IEDriverServer" dir=in program="C:\tools\selenium\iedriverserver.exe" action=allow
 }

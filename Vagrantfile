@@ -2,7 +2,8 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "StefanScherer/windows_10"
+  #config.vm.box = "StefanScherer/windows_10"
+  config.vm.box = "apolloclark/windows2008r2"
 
   config.vm.network "forwarded_port", guest: 4446, host: 4446
 
