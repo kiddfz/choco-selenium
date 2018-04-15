@@ -12,8 +12,14 @@ foreach ($name in $names) {
     nssm remove "$name" confirm
   }
 
-  $rules = Get-NetFirewallRule
-  if ($rules.DisplayName.Contains($name)) {Remove-NetFirewallRule -DisplayName $name}
+  If (Get-NetFirewallRule) {
+    $rules = Get-NetFirewallRule
+    if ($rules.DisplayName.Contains($name)) {Remove-NetFirewallRule -DisplayName $name}
+  } else {
+    try {
+      netsh advfirewall firewall delete rule name="allow80"
+    } catch {}
+  }
 
   if (Test-Path $shortcutDir) {
     $shortcutFile = "$shortcutDir\$name.lnk"

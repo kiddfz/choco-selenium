@@ -133,14 +133,22 @@ echo Logging to $logPath
   }
 }
 
-$rules = Get-NetFirewallRule
-$par = @{
-    DisplayName = "$name"
-    LocalPort   = $pp["port"]
-    Direction   = "Inbound"
-    Protocol    = "TCP"
-    Action      = "Allow"
+If (Get-NetFirewallRule) {
+ $rules = Get-NetFirewallRule
+ $par = @{
+   DisplayName = "$name"
+   LocalPort = $pp["port"]
+   Direction = "Inbound"
+   Protocol = "TCP"
+   Action = "Allow"
+ }
+ if (-not $rules.DisplayName.Contains($par.DisplayName)) {
+   New-NetFirewallRule @par
+ }
+ Write-Debug "Selenium firewall: $par"
+} else {
+  try {
+    netsh advfirewall firewall add rule name="$name" protocol=TCP dir=in localport=$pp["port"] action=allow
+  } catch {}
+  Write-Debug "Selenium firewall: $name"
 }
-if (-not $rules.DisplayName.Contains($par.DisplayName)) {New-NetFirewallRule @par}
-
-Write-Debug "Selenium firewall: $par"
